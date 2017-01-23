@@ -11,6 +11,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Arrays;
 import static jus.aor.printing.Notification.QUERY_PRINT;
 
 /**
@@ -31,7 +32,6 @@ class TCP{
             os = soc.getOutputStream();
             dos = new DataOutputStream(os);
             dos.writeInt(not.ordinal());
-            dos.close();
         }
 	/**
 	 * 
@@ -46,8 +46,6 @@ class TCP{
             dis = new DataInputStream(is);
             
             int not = dis.readInt();
-            
-            dis.close();
             
             return Notification.values()[not];
         }
@@ -66,8 +64,6 @@ class TCP{
             byte[] res = key.marshal();
             dos.writeInt(res.length);
             dos.write(res);
-            
-            dos.close();
         }
 	/**
 	 * 
@@ -89,8 +85,6 @@ class TCP{
             }
             reponse = new JobKey(marshal);
             
-            dis.close();
-            
             return reponse;
         }
 	/**
@@ -101,7 +95,17 @@ class TCP{
 	 * @throws IOException
 	 */
 	static void writeData(Socket soc, InputStream fis, int len) throws IOException {
-	//----------------------------------------------------------------------------- A COMPLETER
+            byte[] buffer = new byte[MAX_LEN_BUFFER];
+            OutputStream os = soc.getOutputStream();
+            DataOutputStream dos = new DataOutputStream(os);
+            int sent = 0;
+            int read = 0;
+            dos.writeInt(len);
+            while(sent < len){
+                read = fis.read(buffer);
+                sent += read;
+                dos.write(buffer,0,read);
+            }
 	}
 	/**
 	 * 
@@ -110,7 +114,19 @@ class TCP{
 	 * @throws IOException
 	 */
 	static String readData(Socket soc) throws IOException {
-	//----------------------------------------------------------------------------- A COMPLETER
+            byte[] buffer = new byte[MAX_LEN_BUFFER];
+            InputStream is = soc.getInputStream();
+            DataInputStream dis = new DataInputStream(is);
+            String file_content = "";
+            int read = 0;
+            int size;
+            int len = dis.readInt();
+            while(read < len) {
+                size = dis.read(buffer);
+                read += size;
+                file_content += new String(buffer,0,size);
+            }
+            return file_content;
 	}
 	/**
 	 * 
