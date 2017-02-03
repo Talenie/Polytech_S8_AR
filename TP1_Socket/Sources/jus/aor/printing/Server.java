@@ -56,9 +56,8 @@ public class Server {
                     log.log(Level.INFO_2,"Server.Notification",protocole);
                     JobKey j = TCP.readJobKey(client);
                     if(protocole == QUERY_PRINT){
-                        String file_content = TCP.readData(client);
-                        
-                        System.out.println("jus.aor.printing.Server.runTCP() : " + file_content);
+                        Esclave slave = new Esclave(client);
+                        slave.start();
                         
                         TCP.writeProtocole(client, REPLY_PRINT_OK);
                         TCP.writeJobKey(client, j);
