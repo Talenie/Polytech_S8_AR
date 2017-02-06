@@ -1,6 +1,7 @@
 package v1;
 
 import java.io.IOException;
+import static java.lang.Thread.sleep;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -186,8 +187,12 @@ public class NioServer implements Runnable {
             return;
         }
         
-        System.out.println("Recu : " + inBuffer.toString());
-        
+        System.out.println("Serveur : " + new String(inBuffer.array()));
+        try {
+            sleep(1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(NioServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
         String msg = "pong";
         send(socketChannel,msg.getBytes());
     }

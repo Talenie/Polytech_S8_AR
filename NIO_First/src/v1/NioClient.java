@@ -200,7 +200,7 @@ public class NioClient implements Runnable {
             return;
         }
         
-        System.out.println(inBuffer.toString());
+        System.out.println("Client : "+ new String(inBuffer.array()));
         
         send(key,msg.getBytes());
         
