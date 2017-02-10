@@ -22,6 +22,8 @@ public class ReadCont  extends Continuation{
     private int size;
     // Etat de l'automate
     private State state;
+    // nombre de pas nécessaires à la lecture du message
+    private int nsteps;
     
     
     /**
@@ -60,6 +62,7 @@ public class ReadCont  extends Continuation{
             state = State.READING;
             size = ReadCont.bytesToInt(size_buf);
             message = ByteBuffer.allocate(size);
+            nsteps = 0;
         }
     }
     
@@ -69,12 +72,13 @@ public class ReadCont  extends Continuation{
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    private Message readmsg() throws IOException, ClassNotFoundException {
+    private Message readmsg() throws IOException, ClassNotFoundException {        
         socketChannel.read(message);
+        nsteps++;
         if(message.remaining() == 0){
             size_buf = ByteBuffer.allocate(4);
             state = State.IDLE;
-            return new Message(message.array());
+            return new Message(message.array(), nsteps);
         }
         return null;
     }
