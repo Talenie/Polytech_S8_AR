@@ -246,7 +246,6 @@ public class NioClient implements Runnable {
     public void send(SelectionKey key,byte[] data) {
         outBuffer = ByteBuffer.wrap(data);
         key.interestOps(SelectionKey.OP_WRITE);
-        // todo
     }
 
     public static void main(String args[]) {

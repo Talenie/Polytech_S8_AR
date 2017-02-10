@@ -61,7 +61,9 @@ public class WriteCont extends Continuation{
             case WRITING_DONE :
                 if(isPendingMsg()){
                     buf = ByteBuffer.wrap(msgs.remove(0));
+                    size_buf = Continuation.intToBytes(buf.remaining());
                     state = State.WRITING_LENGTH;
+                    key.interestOps(SelectionKey.OP_WRITE);
                 }
                 break;
             case WRITING_DATA :
@@ -76,7 +78,6 @@ public class WriteCont extends Continuation{
     
     
     private void writelength() throws IOException {
-        size_buf = Continuation.intToBytes(buf.remaining());
         socketChannel.write(size_buf);
         if(size_buf.remaining() == 0){
             state = State.WRITING_DATA;

@@ -72,6 +72,7 @@ public class ReadCont  extends Continuation{
     private Message readmsg() throws IOException, ClassNotFoundException {
         socketChannel.read(message);
         if(message.remaining() == 0){
+            size_buf = ByteBuffer.allocate(4);
             state = State.IDLE;
             return new Message(message.array());
         }
