@@ -58,11 +58,11 @@ public class WriteCont extends Continuation{
      */
     protected void handleWrite()throws IOException{
         switch(state){
-            case WRITING_DONE :
-                if(isPendingMsg()){
-                    buf = ByteBuffer.wrap(msgs.remove(0));
+            case WRITING_DONE : // writing work is done
+                if(isPendingMsg()){ // if message queue isn't empty ...
+                    buf = ByteBuffer.wrap(msgs.remove(0)); // ... load another message ...
                     size_buf = Continuation.intToBytes(buf.remaining());
-                    state = State.WRITING_LENGTH;
+                    state = State.WRITING_LENGTH; // ... and send it
                     key.interestOps(SelectionKey.OP_WRITE);
                 }
                 break;
@@ -71,12 +71,14 @@ public class WriteCont extends Continuation{
                 break;
             case WRITING_LENGTH :
                 writelength();
-                
             default :
         }
     }
     
-    
+    /**
+     * writes the length of the message that will be sent to the socketChannel
+     * @throws IOException 
+     */
     private void writelength() throws IOException {
         socketChannel.write(size_buf);
         if(size_buf.remaining() == 0){
