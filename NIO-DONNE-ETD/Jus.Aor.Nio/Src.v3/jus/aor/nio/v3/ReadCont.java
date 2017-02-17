@@ -42,10 +42,10 @@ public class ReadCont  extends Continuation{
     protected Message handleRead() throws IOException, ClassNotFoundException{
         Message msg = null;
         switch(state){
-            case IDLE:
+            case IDLE: // reading the message size
                 readsize();
                 break;
-            case READING :
+            case READING : // reading of the message
                 msg = readmsg();
             default:
         }
@@ -58,11 +58,11 @@ public class ReadCont  extends Continuation{
      */
     private void readsize() throws IOException {
         socketChannel.read(size_buf);
-        if(size_buf.remaining() == 0){
+        if(size_buf.remaining() == 0){ // update automata state only if the message size is fully read
             state = State.READING;
             size = ReadCont.bytesToInt(size_buf);
-            message = ByteBuffer.allocate(size);
-            nsteps = 0;
+            message = ByteBuffer.allocate(size); // creates the reading buffer of the right size
+            nsteps = 0; // resets the number of steps for the lecture of one message
         }
     }
     
@@ -73,11 +73,11 @@ public class ReadCont  extends Continuation{
      * @throws ClassNotFoundException
      */
     private Message readmsg() throws IOException, ClassNotFoundException {        
-        socketChannel.read(message);
-        nsteps++;
-        if(message.remaining() == 0){
+        socketChannel.read(message); // reading the received data in the reading buffer
+        nsteps++; // increment steps to read the message
+        if(message.remaining() == 0){ // if buffer is full (message is received)
             size_buf = ByteBuffer.allocate(4);
-            state = State.IDLE;
+            state = State.IDLE; // changing automata state to IDLE : waiting for a new message size
             return new Message(message.array(), nsteps);
         }
         return null;
