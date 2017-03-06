@@ -17,26 +17,31 @@ public class Supplier extends UnicastRemoteObject implements ISupplier {
     private int indice;
     
     public Supplier(int indice) throws RemoteException{
+        System.out.println("Supplier.<init>() : "+indice);
         this.indice = indice;
     }
 
     @Override
     public String question() throws RemoteException {
+        System.out.println("Supplier.question()");
         return "Hello !";
     }
 
     @Override
     public String question(String s) throws RemoteException {
+        System.out.println("Supplier.question()");
         return System.getProperty(s);
     }
 
     @Override
     public String name() throws RemoteException {
+        System.out.println("Supplier.name()");
         return this.toString();
     }
     
     @Override
     public String toString(){
+        System.out.println("Supplier.toString()");
         return "supplier"+indice;
     }
     

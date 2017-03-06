@@ -1,5 +1,6 @@
 
 
+import java.rmi.Naming;
 import java.rmi.registry.*;
 import java.rmi.RemoteException;
 import java.rmi.RMISecurityManager;
@@ -22,14 +23,17 @@ public class Server {
     }
     try  {
       nom = args[0];
-      port = Integer.parseInt(args[1]);
-      nombre = Integer.parseInt(args[2]);
+      nombre = Integer.parseInt(args[1]);
+      port = Integer.parseInt(args[2]);
     }catch(Exception e) {
       System.out.println("Server <nom générique des objets distants> <nombre de noms> <port du registry>");
       System.exit(1);
     }
     // installation d'un securityManager
-    // A COMPLETER : INSTALLATIOND'UN SECURITYMANAGER
+    // A COMPLETER : INSTALLATION D'UN SECURITYMANAGER
+    if(System.getSecurityManager() != null) {
+        System.setSecurityManager(new SecurityManager());
+    }
     // A COMPLETER : MISE EN PLACE DU REGISTRY
       try {
           registry = LocateRegistry.createRegistry(port);
@@ -41,7 +45,9 @@ public class Server {
     try {
       for(int i=1;i<=nombre;i++){
           Supplier sup = new Supplier(i);
-          registry.bind(nom+i,sup);
+          Naming.bind("rmi://localhost:" + port + "/"+ nom + i,sup);
+          //registry.bind(nom+i,sup);
+          System.out.println("Server.main() bind : "+nom+i);
       }
       System.out.println("Tous les objets sont enregistrés dans le serveur d'objets distants");
     } catch (Exception e) {
