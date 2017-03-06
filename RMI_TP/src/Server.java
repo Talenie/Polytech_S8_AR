@@ -1,3 +1,5 @@
+
+
 import java.rmi.registry.*;
 import java.rmi.RemoteException;
 import java.rmi.RMISecurityManager;
@@ -29,9 +31,17 @@ public class Server {
     // installation d'un securityManager
     // A COMPLETER : INSTALLATIOND'UN SECURITYMANAGER
     // A COMPLETER : MISE EN PLACE DU REGISTRY
+      try {
+          registry = LocateRegistry.createRegistry(port);
+      } catch (RemoteException ex) {
+        System.err.println("Erreur de création du Registry");
+        System.exit(1);
+      }
+    
     try {
       for(int i=1;i<=nombre;i++){
-      	// A COMPLETER : CONSTRUCTION ET EXPORTATION DES OBJETS DISTANTS
+          Supplier sup = new Supplier(i);
+          registry.bind(nom+i,sup);
       }
       System.out.println("Tous les objets sont enregistrés dans le serveur d'objets distants");
     } catch (Exception e) {
