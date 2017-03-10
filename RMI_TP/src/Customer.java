@@ -15,13 +15,13 @@ public class Customer extends Thread {
 			if(m.getName().equals("question")) nbQuestion++;
 	}
 	
-	String ou, qui; int num, client;
+	String ou, qui; int num, client, port;
 	private ISupplier obj;
 	/**
 	 * 
 	 * @param ou désignation de la machine distante
 	 * @param qui nom générique du Provider
-	 * @param num numémo spécifique du Provider
+	 * @param num numéro spécifique du Provider
 	 * @param client numéro du C
 	 */
 	public  Customer(String ou, String qui, int num, int client) {
@@ -32,7 +32,7 @@ public class Customer extends Thread {
 			synchronized (Customer.class){
 				System.out.print(this + "->" + "://" + ou + "/" + qui + num);
 				// A COMPLETER : ACQUISITION DE L'OBJET DISTANT
-                                obj = (ISupplier) Naming.lookup("://" + ou + "/" + qui + num);
+                                obj = (ISupplier) Naming.lookup("rmi://" + ou + "/" + qui + num);
 				System.out.println(" est lié a " + obj.name());
 			}
 			try{sleep((int) (Math.random() * 1000));}catch(Exception e){}

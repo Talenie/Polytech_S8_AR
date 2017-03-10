@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * @author morat 
  */
-public class Property implements IProperty, Serializable{
+public class Property implements /*IProperty,*/ Serializable{
 	private static final long serialVersionUID = 1L;
 	private String value;
 	/**
